@@ -1,9 +1,12 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace CourseDB.WebAPI
 {
     public class Program
     {
+         public static CourseDBService Service;
+        
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +27,8 @@ namespace CourseDB.WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            
+            Program.Service.Start(); 
 
             app.UseHttpsRedirection();
 
