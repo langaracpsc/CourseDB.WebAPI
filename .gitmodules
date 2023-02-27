@@ -1,0 +1,3 @@
+[submodule "CourseDB"]
+	path = CourseDB
+	url = https://github.com/langaracpsc/CourseDB
