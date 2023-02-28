@@ -5,7 +5,6 @@ namespace CourseDB.WebAPI
 {
     public class Program
     {
-         public static CourseDBService Service;
         
         public static void Main(string[] args)
         {
@@ -27,8 +26,6 @@ namespace CourseDB.WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            
-            Program.Service.Start(); 
 
             app.UseHttpsRedirection();
 
