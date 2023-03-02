@@ -15,7 +15,6 @@ public class CourseController : ControllerBase
             return new HttpObject(HttpReturnType.Success, this.Service.GetCourses()).ToJson();
         });
     }
-
     public CourseController()
     {
         this.Service = new CourseDBService();

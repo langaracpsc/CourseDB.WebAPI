@@ -10,6 +10,11 @@ public enum HttpReturnType
     Success
 }
 
+public enum HttpErrorType
+{
+    FileNotFoundError
+}
+
 public class HttpObject
 {
     public HttpReturnType Type;
@@ -21,10 +26,23 @@ public class HttpObject
         return JsonConvert.SerializeObject(this);
     }
 
-    public HttpObject(HttpReturnType type, object payload)
+    public HttpObject(HttpReturnType type = HttpReturnType.Success, object payload = null)
     {
         this.Type = type;
         this.Payload = payload;
+    }
+}
+
+public class HttpError : HttpObject
+{
+    public HttpErrorType Type;
+    
+    public string Message;
+
+    public HttpError(HttpErrorType type, string message) : base(HttpReturnType.Error)
+    {
+        this.Type = type;
+        this.Message = message;
     }
 }
 

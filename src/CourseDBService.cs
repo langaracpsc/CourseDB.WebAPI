@@ -5,7 +5,7 @@ namespace CourseDB.WebAPI;
 public class CourseDBService : IService
 {
     protected CourseScraper Scraper;
-
+ 
     public void Start()
     {
         this.Scraper.SyncDB(false);
@@ -25,5 +25,7 @@ public class CourseDBService : IService
         this.Scraper = new CourseScraper(Term.GetCurrent(), DatabaseConfiguration.LoadFromFile("DatabaseConfig.json"));
     }
 }
+
+
 
 
