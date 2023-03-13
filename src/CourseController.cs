@@ -1,4 +1,7 @@
+using System.Collections;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CourseDB.WebAPI;
 
@@ -15,9 +18,30 @@ public class CourseController : ControllerBase
             return new HttpObject(HttpReturnType.Success, this.Service.GetCourses()).ToJson();
         });
     }
+
+    [HttpGet("/courses/query")]
+    public async Task<string> GetCoursesByQuery([FromHeader]string query)
+    {
+        return await Task.Run(() =>
+        {
+            Course[] courses = null;
+
+            try
+            {
+                courses = this.Service.GetCourses(JsonConvert.DeserializeObject<Dictionary<string, object>>(query));
+            }
+            catch (KeyNotFoundException e)
+            {
+                return new HttpError(HttpErrorType.InvalidKeyError, "Provided key is invalid.").ToJson();
+            }
+    
+            return new HttpObject(HttpReturnType.Success, courses).ToJson();
+        });
+    }
+
     public CourseController()
     {
         this.Service = new CourseDBService();
         this.Service.Start();
     } 
-}
+} 

@@ -1,5 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
+using OpenDatabase;
+using OpenDatabaseAPI;
 
 namespace CourseDB.WebAPI
 {
@@ -18,6 +20,16 @@ namespace CourseDB.WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyOrigin();
+                    policy.AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -29,6 +41,8 @@ namespace CourseDB.WebAPI
 
             app.UseHttpsRedirection();
 
+            app.UseCors();
+            
             app.UseAuthorization();
 
             app.MapControllers();

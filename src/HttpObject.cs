@@ -12,7 +12,8 @@ public enum HttpReturnType
 
 public enum HttpErrorType
 {
-    FileNotFoundError
+    FileNotFoundError,
+    InvalidKeyError
 }
 
 public class HttpObject
