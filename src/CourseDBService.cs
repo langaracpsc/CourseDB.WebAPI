@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Diagnostics;
 using Microsoft.SqlServer.Server;
+using Newtonsoft.Json;
 using OpenDatabase;
 
 namespace CourseDB.WebAPI;
@@ -49,14 +51,29 @@ public class CourseDBService : IService
 
     public Course[] GetCourses(Dictionary<string, object> queryMap)
     {
+       Stopwatch watch = Stopwatch.StartNew();
+       watch.Start();
+       
         foreach (string key in queryMap.Keys)
             if (Tools.LinearSearch(key, CourseDBService.ValidKeys) == -1)
                 throw new InvalidKeyException($"Provided key \"{key}\" is invalid.");
 
+        watch.Stop();
+        Console.WriteLine($"Elasped assert: {watch.Elapsed.Seconds}:{watch.Elapsed.Milliseconds}:{watch.Elapsed.Microseconds}");
+        
         return this.Scraper.Manager.GetCoursesByQuery(queryMap);
     }
-    
-    
+
+    public void  SetTerm(Term term)
+    {
+        this.Scraper.SetTerm(term);
+    }
+
+    public Term GetTerm()
+    {
+        return Scraper.CourseTerm;
+    }
+
     public void Stop()
     {
     }
