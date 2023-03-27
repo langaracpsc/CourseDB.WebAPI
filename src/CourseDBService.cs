@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics;
+using System.Runtime.Versioning;
 using Microsoft.SqlServer.Server;
 using Newtonsoft.Json;
 using OpenDatabase;
@@ -42,6 +43,7 @@ public class CourseDBService : IService
     public void Start()
     {
         this.Scraper.SyncDB();
+        this.Scraper.Manager.CacheCourses(this.Scraper.CourseTerm);
     }
 
     public Course[] GetCourses()
@@ -57,9 +59,9 @@ public class CourseDBService : IService
         foreach (string key in queryMap.Keys)
             if (Tools.LinearSearch(key, CourseDBService.ValidKeys) == -1)
                 throw new InvalidKeyException($"Provided key \"{key}\" is invalid.");
-
+        
         watch.Stop();
-        Console.WriteLine($"Elasped assert: {watch.Elapsed.Seconds}:{watch.Elapsed.Milliseconds}:{watch.Elapsed.Microseconds}");
+        Console.WriteLine($"Elasped assert: {watch.Elapsed.Seconds}:{watch.Elapsed.Milliseconds}:{watch.Elapsed.Microseconds}"); 
         
         return this.Scraper.Manager.GetCoursesByQuery(queryMap);
     }

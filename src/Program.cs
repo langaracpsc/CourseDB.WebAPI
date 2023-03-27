@@ -38,7 +38,7 @@ namespace CourseDB.WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseCors();

@@ -6,17 +6,23 @@ using Newtonsoft.Json;
 
 namespace CourseDB.WebAPI;
 
+public class Cache
+{
+    public static string JsonCache = null;
+    public static CourseDBService Service = null;
+}
+
 [Route("/courses")]
 public class CourseController : ControllerBase
 {
-    public CourseDBService Service;
-
+    public string JsonCache;
+    
     [HttpGet]
     public async Task<string> Get()
     {
         return await Task.Run(() =>
         {
-            return new HttpObject(HttpReturnType.Success, this.Service.GetCourses()).ToJson();
+            return Cache.JsonCache; //(Cache.JsonCache != null) ? Cache.JsonCache : Cache.JsonCache = new HttpObject(HttpReturnType.Success, this.Service.GetCourses()).ToJson();
         });
     }
 
@@ -32,7 +38,7 @@ public class CourseController : ControllerBase
                 Stopwatch watch = Stopwatch.StartNew();
             
                 watch.Start();
-                courses = this.Service.GetCourses(JsonConvert.DeserializeObject<Dictionary<string, object>>(query));
+                courses = Cache.Service.GetCourses(JsonConvert.DeserializeObject<Dictionary<string, object>>(query));
                 watch.Stop();
                 
                 Console.WriteLine($"Elasped deserialize: {watch.Elapsed.Seconds}:{watch.Elapsed.Milliseconds}:{watch.Elapsed.Microseconds}");
@@ -62,7 +68,7 @@ public class CourseController : ControllerBase
         return await Task.Run(() =>
         {
             Console.WriteLine(term);
-            this.Service.SetTerm(Term.FromTermString(term));
+            Cache.Service.SetTerm(Term.FromTermString(term));
             return new HttpObject(HttpReturnType.Success, "Success").ToJson();
         });
     }
@@ -72,13 +78,23 @@ public class CourseController : ControllerBase
     {
         return await Task.Run(() =>
         {
-            return new HttpObject(HttpReturnType.Success, this.Service.GetTerm()).ToJson();
-        });
+            return new HttpObject(HttpReturnType.Success, Cache.Service.GetTerm()).ToJson();
+        }); 
     }
-
+    
     public CourseController()
     {
-        this.Service = new CourseDBService();
-        this.Service.Start();
+        if (Cache.Service == null)
+        {
+            Cache.Service = new CourseDBService();
+            Cache.Service.Start();
+        }
+       
+        if (Cache.JsonCache == null)
+        {
+            Cache.JsonCache = new HttpObject(HttpReturnType.Success, Cache.Service.GetCourses()).ToJson();
+            
+            Console.WriteLine("Fetched courses.");
+        }
     } 
 } 
