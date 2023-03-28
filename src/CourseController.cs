@@ -9,7 +9,10 @@ namespace CourseDB.WebAPI;
 public class Cache
 {
     public static string JsonCache = null;
+
     public static CourseDBService Service = null;
+
+    public static Dictionary<string, string> QueryMap = null; // caches query results
 }
 
 [Route("/courses")]
@@ -33,13 +36,16 @@ public class CourseController : ControllerBase
         {
             Course[] courses = null;
 
+            string key; 
+            
             try
             {
                 Stopwatch watch = Stopwatch.StartNew();
             
-                watch.Start();
+                if (Cache.QueryMap.ContainsKey(key = CourseDB.WebAPI.Tools.EliminateSubString(query, " ")))
+                    return Cache.QueryMap[key];
+                
                 courses = Cache.Service.GetCourses(JsonConvert.DeserializeObject<Dictionary<string, object>>(query));
-                watch.Stop();
                 
                 Console.WriteLine($"Elasped deserialize: {watch.Elapsed.Seconds}:{watch.Elapsed.Milliseconds}:{watch.Elapsed.Microseconds}");
             }
@@ -57,6 +63,8 @@ public class CourseController : ControllerBase
             watch1.Stop();
             
             Console.WriteLine($"Elasped serialize: {watch1.Elapsed.Seconds}:{watch1.Elapsed.Milliseconds}:{watch1.Elapsed.Microseconds}");
+
+            Cache.QueryMap.Add(key, retObject);
             
             return retObject;
         });
@@ -89,6 +97,9 @@ public class CourseController : ControllerBase
             Cache.Service = new CourseDBService();
             Cache.Service.Start();
         }
+
+        if (Cache.QueryMap == null)
+            Cache.QueryMap = new Dictionary<string, string>();
        
         if (Cache.JsonCache == null)
         {

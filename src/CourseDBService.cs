@@ -53,15 +53,9 @@ public class CourseDBService : IService
 
     public Course[] GetCourses(Dictionary<string, object> queryMap)
     {
-       Stopwatch watch = Stopwatch.StartNew();
-       watch.Start();
-       
         foreach (string key in queryMap.Keys)
             if (Tools.LinearSearch(key, CourseDBService.ValidKeys) == -1)
                 throw new InvalidKeyException($"Provided key \"{key}\" is invalid.");
-        
-        watch.Stop();
-        Console.WriteLine($"Elasped assert: {watch.Elapsed.Seconds}:{watch.Elapsed.Milliseconds}:{watch.Elapsed.Microseconds}"); 
         
         return this.Scraper.Manager.GetCoursesByQuery(queryMap);
     }
@@ -78,6 +72,7 @@ public class CourseDBService : IService
 
     public void Stop()
     {
+        this.Scraper.Manager.Database.Disconnect();
     }
 
     public CourseDBService()
@@ -90,7 +85,5 @@ public class CourseDBService : IService
             this.QueryHash.Add(CourseDBService.ValidKeys[x], null);
     }
 }
-
-
 
 
