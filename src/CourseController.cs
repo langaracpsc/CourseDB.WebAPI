@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using OpenDatabase;
 
 namespace CourseDB.WebAPI;
 
@@ -90,6 +91,12 @@ public class CourseController : ControllerBase
         }); 
     }
     
+    [HttpGet("/terms")]
+    public async Task<string> GetTerms()
+    {
+        return new HttpObject(HttpReturnType.Success, Cache.Service.GetTerms()).ToJson();
+    }
+
     public CourseController()
     {
         if (Cache.Service == null)

@@ -60,6 +60,18 @@ public class CourseDBService : IService
         return this.Scraper.Manager.GetCoursesByQuery(queryMap);
     }
 
+    public string[] GetTerms()
+    {
+        Record[] records = this.Scraper.Manager.Database.FetchQueryData("SELECT DISTINCT Term FROM Courses", "Courses");
+
+        string[] terms = new string[records.Length];
+
+        for (int x = 0; x < records.Length; x++)
+            terms[x] = (string)records[x].Values[0];
+        
+        return terms;
+    }
+
     public void  SetTerm(Term term)
     {
         this.Scraper.SetTerm(term);
