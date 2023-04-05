@@ -13,7 +13,8 @@ public enum HttpReturnType
 public enum HttpErrorType
 {
     FileNotFoundError,
-    InvalidKeyError
+    InvalidKeyError,
+    InvalidQueryException
 }
 
 public class HttpObject

@@ -66,21 +66,27 @@ public class CourseController : ControllerBase
         {
             Course[] courses = null;
 
-            string key; 
-            
+            string key = null,
+                retObject;
+
             try
             {
-                if (Cache.QueryMap.ContainsKey(key = CourseDB.WebAPI.Tools.EliminateSubString(query, " ")))
+                // Checks the query against the cache
+                if (Cache.QueryMap.ContainsKey(key = CourseDB.WebAPI.Tools.EliminateSubString(query, " "))) 
                     return Cache.QueryMap[key];
-                
+
                 courses = Cache.Service.FetchAlikeQuery(JsonConvert.DeserializeObject<Dictionary<string, string>>(query));
             }
             catch (KeyNotFoundException e)
             {
                 return new HttpError(HttpErrorType.InvalidKeyError, "Provided key is invalid.").ToJson();
             }
-
-            string retObject = new HttpObject(HttpReturnType.Success, courses).ToJson();
+            catch (Exception e)
+            {
+                return new HttpError(HttpErrorType.InvalidQueryException, "Provided query is invalid.").ToJson();
+            }
+            
+            retObject = new HttpObject(HttpReturnType.Success, courses).ToJson();
 
             Cache.QueryMap.Add(key, retObject);
             
