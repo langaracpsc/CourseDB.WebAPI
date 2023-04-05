@@ -41,29 +41,46 @@ public class CourseController : ControllerBase
             
             try
             {
-                Stopwatch watch = Stopwatch.StartNew();
-            
                 if (Cache.QueryMap.ContainsKey(key = CourseDB.WebAPI.Tools.EliminateSubString(query, " ")))
                     return Cache.QueryMap[key];
                 
                 courses = Cache.Service.GetCourses(JsonConvert.DeserializeObject<Dictionary<string, object>>(query));
-                
-                Console.WriteLine($"Elasped deserialize: {watch.Elapsed.Seconds}:{watch.Elapsed.Milliseconds}:{watch.Elapsed.Microseconds}");
             }
             catch (KeyNotFoundException e)
             {
                 return new HttpError(HttpErrorType.InvalidKeyError, "Provided key is invalid.").ToJson();
             }
 
-            Stopwatch watch1 = Stopwatch.StartNew();
-            
-            watch1.Start();
-            
             string retObject = new HttpObject(HttpReturnType.Success, courses).ToJson();
 
-            watch1.Stop();
+            Cache.QueryMap.Add(key, retObject);
             
-            Console.WriteLine($"Elasped serialize: {watch1.Elapsed.Seconds}:{watch1.Elapsed.Milliseconds}:{watch1.Elapsed.Microseconds}");
+            return retObject;
+        });
+    }
+    
+    [HttpGet("/courses/querymatch")]
+    public async Task<string> GetCoursesByQueryMatch([FromHeader]string query)
+    {
+        return await Task.Run(() =>
+        {
+            Course[] courses = null;
+
+            string key; 
+            
+            try
+            {
+                if (Cache.QueryMap.ContainsKey(key = CourseDB.WebAPI.Tools.EliminateSubString(query, " ")))
+                    return Cache.QueryMap[key];
+                
+                courses = Cache.Service.FetchAlikeQuery(JsonConvert.DeserializeObject<Dictionary<string, string>>(query));
+            }
+            catch (KeyNotFoundException e)
+            {
+                return new HttpError(HttpErrorType.InvalidKeyError, "Provided key is invalid.").ToJson();
+            }
+
+            string retObject = new HttpObject(HttpReturnType.Success, courses).ToJson();
 
             Cache.QueryMap.Add(key, retObject);
             

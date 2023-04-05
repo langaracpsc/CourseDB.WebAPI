@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
 	<ImplicitUsings>enable</ImplicitUsings>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<!--   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>-->
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>    
   </PropertyGroup>
 
@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="dependencies\CourseDB\CourseDB.csproj" />
     <ProjectReference Include="CourseDB\CourseDB.csproj" />
   </ItemGroup>
 
