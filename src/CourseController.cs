@@ -75,7 +75,7 @@ public class CourseController : ControllerBase
                 if (Cache.QueryMap.ContainsKey(key = CourseDB.WebAPI.Tools.EliminateSubString(query, " "))) 
                     return Cache.QueryMap[key];
 
-                courses = Cache.Service.FetchAlikeQuery(JsonConvert.DeserializeObject<Dictionary<string, string>>(query));
+                courses = Cache.Service.FetchAlikeQuery(JsonConvert.DeserializeObject<Dictionary<string, object>>(query));
             }
             catch (KeyNotFoundException e)
             {
@@ -88,6 +88,7 @@ public class CourseController : ControllerBase
             
             retObject = new HttpObject(HttpReturnType.Success, courses).ToJson();
 
+            // Adds the result to the cache
             Cache.QueryMap.Add(key, retObject);
             
             return retObject;

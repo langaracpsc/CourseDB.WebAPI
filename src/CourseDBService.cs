@@ -64,7 +64,7 @@ public class CourseDBService : IService
         return this.Scraper.Manager.GetCoursesByQuery(queryMap);
     }
 
-    public Course[] FetchAlikeQuery(Dictionary<string, string> queryMap)
+    public Course[] FetchAlikeQuery(Dictionary<string, object> queryMap)
     {
         string conditionString = null;
 
